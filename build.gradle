@@ -1,0 +1,67 @@
+apply plugin: 'groovy'
+
+ext {
+    jobDslVersion = '1.61'
+    jenkinsVersion = '2.46.2'
+}
+
+sourceSets {
+    jobs {
+        groovy {
+            srcDirs 'jobs'
+            compileClasspath += main.compileClasspath
+        }
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+repositories {
+    jcenter()
+    maven {
+        url 'https://repo.jenkins-ci.org/public/'
+    }
+}
+
+configurations {
+    testPlugins {}
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.7'
+    compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}"
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'cglib:cglib-nodep:2.2.2' // used by Spock
+
+    // Jenkins test harness dependencies
+    testCompile 'org.jenkins-ci.main:jenkins-test-harness:2.22'
+    testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}"
+    testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}:war-for-test@jar"
+
+    // Job DSL plugin including plugin dependencies
+    testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
+    testCompile 'org.jenkins-ci.plugins:structs:1.6@jar'
+
+    testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:6.0.4'
+}
+
+task resolveTestPlugins(type: Copy) {
+    from configurations.testPlugins
+    into new File(sourceSets.test.output.resourcesDir, 'test-dependencies')
+    include '*.hpi'
+    include '*.jpi'
+
+    doLast {
+        def baseNames = source.collect { it.name[0..it.name.lastIndexOf('.')-1] }
+        new File(destinationDir, 'index').setText(baseNames.join('\n'), 'UTF-8')
+    }
+}
+
+test {
+    dependsOn tasks.resolveTestPlugins
+    inputs.files sourceSets.jobs.groovy.srcDirs
+
+    // set build directory for Jenkins test harness, JENKINS-26331
+    systemProperty 'buildDirectory', project.buildDir.absolutePath
+}
