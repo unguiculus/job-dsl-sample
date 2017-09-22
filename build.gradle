@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 
 ext {
-    jobDslVersion = '1.61'
-    jenkinsVersion = '2.46.2'
+    jobDslVersion = '1.65'
+    jenkinsVersion = '2.73.1'
 }
 
 sourceSets {
@@ -28,22 +28,151 @@ configurations {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.7'
     compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}"
-
-    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-    testCompile 'cglib:cglib-nodep:2.2.2' // used by Spock
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 
     // Jenkins test harness dependencies
-    testCompile 'org.jenkins-ci.main:jenkins-test-harness:2.22'
+    testCompile 'org.jenkins-ci.main:jenkins-test-harness:2.27'
     testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}"
-    testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}:war-for-test@jar"
 
     // Job DSL plugin including plugin dependencies
+    testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
-    testCompile 'org.jenkins-ci.plugins:structs:1.6@jar'
+    testCompile 'org.jenkins-ci.plugins:structs:1.9@jar'
 
-    testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:6.0.4'
+    /*
+        plugins to install in test instance
+        list generate with this Groovy script in the Jenkins Script Console:
+
+        jenkins.model.Jenkins.instance.pluginManager.plugins.findAll({ !(it.shortName ==~ /job-dsl|structs/) }).each {
+            println "testPlugins '${it.manifest.mainAttributes.getValue("Group-Id")}:${it.shortName}:${it.version}'"
+        }
+    */
+
+    testPlugins 'org.jenkins-ci.plugins:github-branch-source:2.2.3'
+    testPlugins 'org.jenkins-ci.plugins:git:3.5.1'
+    testPlugins 'io.jenkins.blueocean:blueocean:1.2.4'
+    testPlugins 'org.jenkins-ci.ui:momentjs:1.1.1'
+    testPlugins 'org.jenkins-ci.plugins:ssh-agent:1.15'
+    testPlugins 'org.jenkins-ci.plugins:envinject:2.1.3'
+    testPlugins 'org.jenkins-ci.plugins:mercurial:2.1'
+    testPlugins 'org.jenkins-ci.plugins.pipeline-stage-view:pipeline-rest-api:2.9'
+    testPlugins 'io.jenkins.blueocean:blueocean-pipeline-scm-api:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:create-fingerprint:1.2'
+    testPlugins 'org.jenkins-ci.plugins:envinject-api:1.2'
+    testPlugins 'org.jenkins-ci.plugins:docker-commons:1.8'
+    testPlugins 'org.jenkins-ci.tools:git-parameter:0.8.1'
+    testPlugins 'org.jenkins-ci.plugins:ssh-slaves:1.21'
+    testPlugins 'org.jenkins-ci.plugins:blueocean-autofavorite:1.0.0'
+    testPlugins 'org.jenkins-ci.plugins:ansicolor:0.5.2'
+    testPlugins 'org.jenkins-ci.plugins:htmlpublisher:1.14'
+    testPlugins 'org.jenkins-ci.plugins:sonar:2.6.1'
+    testPlugins 'io.jenkins.blueocean:blueocean-bitbucket-pipeline:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:ssh-credentials:1.13'
+    testPlugins 'org.jenkins-ci.plugins:mailer:1.20'
+    testPlugins 'org.jenkins-ci.plugins:copyartifact:1.38.1'
+    testPlugins 'org.jenkins-ci.ui:jquery-detached:1.2.1'
+    testPlugins 'org.jenkins-ci.plugins:email-ext:2.60'
+    testPlugins 'com.coravy.hudson.plugins.github:github:1.28.0'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-durable-task-step:2.15'
+    testPlugins 'org.jenkins-ci.plugins:script-security:1.34'
+    testPlugins 'io.jenkins.blueocean:blueocean-jwt:1.2.4'
+    testPlugins 'org.jvnet.hudson.plugins:downstream-buildview:1.9'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-multibranch:2.16'
+    testPlugins 'org.jenkins-ci.plugins:authentication-tokens:1.3'
+    testPlugins 'org.jenkins-ci.plugins:variant:1.1'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-cps-global-lib:2.9'
+    testPlugins 'io.jenkins.blueocean:blueocean-rest:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:bouncycastle-api:2.16.2'
+    testPlugins 'io.jenkins.blueocean:blueocean-personalization:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:jira:2.4.2'
+    testPlugins 'io.jenkins.blueocean:blueocean-git-pipeline:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-utility-steps:1.4.1'
+    testPlugins 'org.jenkins-ci.plugins:jquery:1.11.2-1'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-stage-step:2.2'
+    testPlugins 'org.jenkins-ci.plugins:github-api:1.86'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-job:2.14.1'
+    testPlugins 'org.jenkins-ci.plugins:blueocean-display-url:2.1.0'
+    testPlugins 'org.jenkins-ci.plugins:translation:1.15'
+    testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.35.2'
+    testPlugins 'org.jenkins-ci.plugins:credentials-binding:1.13'
+    testPlugins 'org.jenkins-ci.plugins:conditional-buildstep:1.3.6'
+    testPlugins 'org.jenkins-ci.plugins:toolenv:1.1'
+    testPlugins 'org.jenkins-ci.plugins:role-strategy:2.6.0'
+    testPlugins 'io.jenkins.blueocean:blueocean-github-pipeline:1.2.4'
+    testPlugins 'org.6wind.jenkins:lockable-resources:2.0'
+    testPlugins 'org.jenkins-ci.plugins:multiple-scms:0.6'
+    testPlugins 'org.jenkins-ci.plugins:javadoc:1.4'
+    testPlugins 'org.jenkins-ci.plugins:mask-passwords:2.10.1'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-definition:1.2'
+    testPlugins 'org.jenkins-ci.plugins:run-condition:1.0'
+    testPlugins 'org.jenkins-ci.plugins:git-client:2.5.0'
+    testPlugins 'org.jenkins-ci.ui:handlebars:1.1.1'
+    testPlugins 'org.jenkins-ci.plugins:git-server:1.7'
+    testPlugins 'org.jenkins-ci.plugins:matrix-project:1.11'
+    testPlugins 'org.jenkins-ci.plugins:port-allocator:1.8'
+    testPlugins 'io.jenkins.blueocean:blueocean-events:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:pubsub-light:1.12'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-build-step:2.5.1'
+    testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:6.1.2'
+    testPlugins 'org.jenkins-ci.plugins:durable-task:1.14'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-extensions:1.2'
+    testPlugins 'org.jvnet.hudson.plugins:favorite:2.3.0'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.5'
+    testPlugins 'io.jenkins.blueocean:blueocean-pipeline-api-impl:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-milestone-step:1.3.1'
+    testPlugins 'io.jenkins.blueocean:blueocean-pipeline-editor:1.2.4'
+    testPlugins 'org.jenkinsci.plugins:doclinks:0.6.1'
+    testPlugins 'org.jvnet.hudson.plugins:postbuild-task:1.8'
+    testPlugins 'org.jenkins-ci.plugins.pipeline-stage-view:pipeline-stage-view:2.9'
+    testPlugins 'org.jenkins-ci.plugins:plain-credentials:1.4'
+    testPlugins 'org.jenkins-ci.plugins:build-name-setter:1.6.7'
+    testPlugins 'io.jenkins.blueocean:blueocean-web:1.2.4'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-api:1.2'
+    testPlugins 'org.jenkins-ci.plugins:jackson2-api:2.7.3'
+    testPlugins 'org.jenkins-ci.plugins.icon-shim:icon-shim:2.0.3'
+    testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.25'
+    testPlugins 'org.jenkins-ci.plugins:antisamy-markup-formatter:1.5'
+    testPlugins 'org.jenkins-ci.plugins:cloudbees-bitbucket-branch-source:2.2.3'
+    testPlugins 'org.jvnet.hudson.plugins:locale:1.2'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-declarative-agent:1.1.1'
+    testPlugins 'io.jenkins.blueocean:blueocean-commons:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:gradle:1.27.1'
+    testPlugins 'io.jenkins.blueocean:blueocean-rest-impl:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:disk-usage:0.28'
+    testPlugins 'com.cloudbees.jenkins.plugins:docker-custom-build-environment:1.6.5'
+    testPlugins 'io.jenkins.blueocean:blueocean-jira:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-input-step:2.8'
+    testPlugins 'io.jenkins.blueocean:blueocean-dashboard:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-basic-steps:2.6'
+    testPlugins 'org.jvnet.hudson.plugins:hipchat:2.1.1'
+    testPlugins 'org.jenkins-ci.plugins:config-file-provider:2.16.4'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-support:2.14'
+    testPlugins 'org.jenkins-ci.plugins:cron_column:1.4'
+    testPlugins 'org.jenkins-ci.plugins:timestamper:1.8.8'
+    testPlugins 'org.jenkins-ci.plugins:matrix-auth:1.7'
+    testPlugins 'org.jenkins-ci.main:maven-plugin:2.17'
+    testPlugins 'org.jenkins-ci.plugins:junit:1.21'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-cps:2.40'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-maven:3.0.0'
+    testPlugins 'org.jenkins-ci.plugins:scm-api:2.2.2'
+    testPlugins 'io.jenkins.blueocean:blueocean-config:1.2.4'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-scm-step:2.6'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-api:2.20'
+    testPlugins 'org.jenkins-ci.plugins:docker-workflow:1.13'
+    testPlugins 'org.jenkins-ci.plugins:credentials:2.1.16'
+    testPlugins 'org.jenkins-ci.plugins:groovy:2.0'
+    testPlugins 'org.jenkins-ci.plugins:description-setter:1.10'
+    testPlugins 'io.jenkins.blueocean:blueocean-i18n:1.2.4'
+    testPlugins 'org.jenkinsci.plugins:pipeline-stage-tags-metadata:1.2'
+    testPlugins 'org.jenkins-ci.ui:ace-editor:1.1'
+    testPlugins 'org.jenkins-ci.plugins:display-url-api:2.0'
+    testPlugins 'org.jenkins-ci.plugins:token-macro:2.3'
+    testPlugins 'org.jenkins-ci.plugins:sse-gateway:1.15'
+    testPlugins 'org.jenkins-ci.plugins:branch-api:2.0.11'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-graph-analysis:1.5'
+    testPlugins 'org.jenkins-ci.plugins:extra-columns:1.18'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-step-api:2.13'
 }
 
 task resolveTestPlugins(type: Copy) {
