@@ -1,5 +1,3 @@
-import javaposse.jobdsl.dsl.Job
-
 import static io.unguiculus.jobdsl.JobUtils.addDefaults
 import static io.unguiculus.jobdsl.JobUtils.addTimestampsWrapper
 
