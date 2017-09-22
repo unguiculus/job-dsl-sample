@@ -16,6 +16,7 @@ Spock test checks that no exception is thrown. Real world setup might want to us
 gives you a starting point for an initial setup. Additionally, the generated job config files are saved to directory
 `build/xml`.
 
+Used by https://github.com/unguiculus/docker-jenkins-bootstrap[docker-jenkins-bootstrap].
 
 '''
 [link=http://www.apache.org/licenses/LICENSE-2.0.html]
