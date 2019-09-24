@@ -1,6 +1,6 @@
 package io.unguiculus.jobdsl
 
-import groovy.io.FileType
+import groovy.util.FileNameFinder
 import javaposse.jobdsl.dsl.DslScriptLoader
 import javaposse.jobdsl.dsl.JobManagement
 import org.junit.ClassRule
@@ -8,6 +8,7 @@ import org.jvnet.hudson.test.JenkinsRule
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+
 /**
  * Tests that all dsl scripts in the jobs directory will compile.
  */
@@ -28,17 +29,7 @@ class JobScriptsSpec extends Specification {
         noExceptionThrown()
 
         where:
-        file << jobFiles
-    }
-
-    static List<File> getJobFiles() {
-        List<File> files = []
-        new File('jobs').eachFileRecurse(FileType.FILES) {
-            if (it.name.endsWith('.groovy')) {
-                files << it
-            }
-        }
-        files
+        file << new FileNameFinder().getFileNames('jobs', '**/*.groovy').collect { new File(it) }
     }
 }
 
