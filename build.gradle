@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 ext {
-    jobDslVersion = '1.75'
+    jobDslVersion = '1.79'
     jenkinsVersion = '2.121'
 }
 
